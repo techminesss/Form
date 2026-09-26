@@ -81,15 +81,11 @@ server.post("/get-certificate", async (req, res) => {
   }
 
   try {
-    let user = await userModel.findOne({ mobile });
-
-    if (!user) {
-      user = await userModel.create({
-        name,
-        mobile,
-        course,
-      });
-    }
+    const user = await userModel.create({
+      name,
+      mobile,
+      course,
+    });
 
     // Set headers for PDF download and prevent caching
     res.setHeader(
