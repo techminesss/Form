@@ -129,12 +129,22 @@ server.post("/get-certificate", async (req, res) => {
     doc.end();
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .send({ success: false, message: error.message });
+    if (!res.headersSent) {
+      res.status(500).send({ success: false, message: error.message });
+    } else {
+      console.error("Error occurred after headers sent:", error.message);
+      res.end();
+    }
   }
 });
 
 server.listen(process.env.PORT || 8000, () => {
   console.log("server running");
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err);
 });
